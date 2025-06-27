@@ -1,0 +1,201 @@
+.desktop {
+    
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    object-fit: fill;
+  }
+
+  .desktop .overlap-group {
+    height: 1024px;
+    background-image: url("img/bacground.png");
+    background-size: cover;
+    background-position: 50% 50%;
+  }
+
+  .desktop .overlap-group {
+    height: 1024px;
+    background-image: url(./img/bacground-1.png);
+    background-size: cover;
+    background-position: 50% 50%;
+  }
+  
+  .desktop .div {
+    background-color: #ffffff;
+    width: 1440px;
+    height: 1024px;
+    position: relative;
+  }
+  
+  .desktop .group {
+    position: absolute;
+    width: 501px;
+    height: 82px;
+    top: 490px;
+    left: 471px;
+  }
+  
+  .desktop .smart-signage {
+    position: absolute;
+    width: 82px;
+    height: 82px;
+    top: 0;
+    left: 0;
+    object-fit: cover;
+  }
+  
+  .desktop .text-wrapper {
+    position: absolute;
+    top: 5px;
+    left: 102px;
+    font-family: "Poppins-Bold", Helvetica;
+    font-weight: 700;
+    color: #17354d;
+    font-size: 48px;
+    letter-spacing: 0;
+    line-height: normal;
+  }
+  
+  .desktop .frame {
+    display: flex;
+    width: 155px;
+    height: 53px;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+    position: absolute;
+    top: 296px;
+    left: 646px;
+    background-color: #17354d;
+    border-radius: 12px;
+  }
+  
+  .desktop .text-wrapper-2 {
+    position: relative;
+    width: fit-content;
+    font-family: "Poppins-Regular", Helvetica;
+    font-weight: 400;
+    color: #ffffff;
+    font-size: 18px;
+    letter-spacing: 0;
+    line-height: normal;
+  }
+  
+  .desktop .div-wrapper {
+    top: 393px;
+    left: 857px;
+    display: flex;
+    width: 155px;
+    height: 53px;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+    position: absolute;
+    background-color: #17354d;
+    border-radius: 12px;
+  }
+  
+  .desktop .frame-2 {
+    top: 393px;
+    left: 428px;
+    display: flex;
+    width: 155px;
+    height: 53px;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+    position: absolute;
+    background-color: #17354d;
+    border-radius: 12px;
+  }
+  
+  .desktop .frame-3 {
+    top: 616px;
+    left: 428px;
+    display: flex;
+    width: 155px;
+    height: 53px;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+    position: absolute;
+    background-color: #17354d;
+    border-radius: 12px;
+  }
+  
+  .desktop .frame-4 {
+    top: 713px;
+    left: 646px;
+    display: flex;
+    width: 155px;
+    height: 53px;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+    position: absolute;
+    background-color: #17354d;
+    border-radius: 12px;
+  }
+  
+  .desktop .frame-5 {
+    top: 616px;
+    left: 857px;
+    display: flex;
+    width: 155px;
+    height: 53px;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+    position: absolute;
+    background-color: #17354d;
+    border-radius: 12px;
+  }
+  .desktop .frame,
+.desktop .frame-2,
+.desktop .div-wrapper,
+.desktop .frame-3,
+.desktop .frame-4,
+.desktop .frame-5 {
+    display: flex;
+    width: 155px;
+    height: 53px;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+    position: absolute;
+    background-color: #17354d; /* Original background color */
+    border-radius: 12px;
+    transition: background-color 0.3s ease; /* Smooth transition effect */
+}
+
+/* Hover effect for the frames */
+.desktop .frame:hover,
+.desktop .frame-2:hover,
+.desktop .div-wrapper:hover,
+.desktop .frame-3:hover,
+.desktop .frame-4:hover,
+.desktop .frame-5:hover {
+    background-color: #F92D5E; /* New hover color */
+}
+
+/* Keeping text inside white on hover */
+.desktop .text-wrapper-2 {
+    position: relative;
+    width: fit-content;
+    font-family: "Poppins-Regular", Helvetica;
+    font-weight: 400;
+    color: #ffffff;
+    font-size: 18px;
+    letter-spacing: 0;
+    line-height: normal;
+    transition: color 0.3s ease; /* Smooth transition effect for text color */
+}
