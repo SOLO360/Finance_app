@@ -189,12 +189,15 @@ $financialGoals = $stmt->get_result();
         <?php include 'includes/sidebar.php'; ?>
 
         <!-- Main Content -->
-        <div class="flex-1 overflow-auto ">
+        <div class="flex-1 overflow-auto lg:ml-64">
             <!-- Header -->
             <header class="glass-effect border-b border-white/10">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="flex justify-between h-16">
                         <div class="flex items-center">
+                            <button id="sidebarToggle" class="text-white p-2 rounded-md hover:bg-white/20 lg:hidden mr-2">
+                                <i class="fas fa-bars text-xl"></i>
+                            </button>
                             <h1 class="text-xl font-bold text-white">Dashboard</h1>
                         </div>
                         <div class="flex items-center space-x-4">
@@ -497,5 +500,6 @@ $financialGoals = $stmt->get_result();
             });
         });
     </script>
+    <script src="js/app.js" defer></script>
 </body>
 </html>

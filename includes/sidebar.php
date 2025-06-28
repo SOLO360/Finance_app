@@ -1,5 +1,5 @@
 <!-- Sidebar -->
-<div class="w-64 bg-slate-800/50 backdrop-blur-lg border-r border-white/10">
+<div id="sidebar" class="w-64 bg-slate-800/50 backdrop-blur-lg border-r border-white/10 fixed inset-y-0 left-0 z-30 transform -translate-x-full transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-auto">
     <div class="p-4">
         <div class="flex items-center space-x-3">
             <div class="h-10 w-10 rounded-lg flex items-center justify-center">
