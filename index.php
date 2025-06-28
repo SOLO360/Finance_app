@@ -57,9 +57,9 @@ $total_balance = $total_income - $total_expenses;
 
 // Get recent transactions (last 5 from both income and expenses, with category name, ordered by date)
 $sql = "
-    SELECT amount, description, 'income' as type, income_date as date, category as category_name FROM income
+    SELECT amount, description, 'income' as type, income_date as date, category as category_name, 'fa-arrow-trend-up' as category_icon FROM income
     UNION ALL
-    SELECT e.amount, e.description, 'expense' as type, e.expense_date as date, c.name as category_name FROM expenses e LEFT JOIN categories c ON e.category_id = c.id
+    SELECT e.amount, e.description, 'expense' as type, e.expense_date as date, c.name as category_name, COALESCE(c.icon, 'fa-tag') as category_icon FROM expenses e LEFT JOIN categories c ON e.category_id = c.id
     ORDER BY date DESC
     LIMIT 5
 ";
@@ -184,33 +184,34 @@ $financialGoals = $stmt->get_result();
     </style>
 </head>
 <body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen">
-    <div class="flex h-screen">
-        <!-- Sidebar -->
-        <?php include 'includes/sidebar.php'; ?>
+    <!-- Sidebar -->
+    <?php include 'includes/sidebar.php'; ?>
 
-        <!-- Main Content -->
-        <div class="flex-1 overflow-auto ">
-            <!-- Header -->
-            <header class="glass-effect border-b border-white/10">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div class="flex justify-between h-16">
-                        <div class="flex items-center">
-                            <h1 class="text-xl font-bold text-white">Dashboard</h1>
-                        </div>
-                        <div class="flex items-center space-x-4">
-                            <div class="flex items-center space-x-2">
-                                <div class="h-8 w-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center">
-                                    <i class="fas fa-user text-white text-sm"></i>
-                                </div>
-                                <span class="text-white font-medium">Welcome, <?php echo htmlspecialchars($user['username']); ?></span>
+    <!-- Main Content -->
+    <div class="lg:ml-64 transition-all duration-300 min-h-screen">
+        <!-- Header -->
+        <header class="glass-effect border-b border-white/10 sticky top-0 z-30">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center">
+                        <h1 class="text-xl font-bold text-white">Dashboard</h1>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center space-x-2">
+                            <div class="h-8 w-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center">
+                                <i class="fas fa-user text-white text-sm"></i>
                             </div>
+                            <span class="text-white font-medium">Welcome, <?php echo htmlspecialchars($user['username']); ?></span>
                         </div>
                     </div>
                 </div>
-            </header>
+            </div>
+        </header>
 
+        <!-- Content Area -->
+        <div class="p-6">
             <!-- Quick Actions -->
-            <div class="my-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="my-12 max-w-7xl mx-auto">
                 <div class="flex flex-wrap gap-4 justify-center sm:justify-start">
                     <a href="add_transaction.php" class="group bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
                         <i class="fas fa-plus mr-2 group-hover:rotate-90 transition-transform duration-300"></i>
@@ -228,7 +229,7 @@ $financialGoals = $stmt->get_result();
             </div>
 
             <!-- Financial Overview Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 max-w-7xl mx-auto">
                 <!-- Total Balance -->
                 <div class="card-hover bg-gradient-to-br from-emerald-400 to-emerald-600 p-6 rounded-2xl shadow-xl text-white relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-10 -mt-10"></div>
@@ -291,7 +292,7 @@ $financialGoals = $stmt->get_result();
             </div>
 
             <!-- Charts and Details -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
                 <!-- Recent Transactions -->
                 <div class="lg:col-span-2 glass-effect rounded-2xl p-6 shadow-xl">
                     <div class="flex items-center justify-between mb-6">
@@ -309,7 +310,7 @@ $financialGoals = $stmt->get_result();
                         <div class="flex items-center p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all duration-200 group">
                             <div class="flex-shrink-0 mr-4">
                                 <div class="w-12 h-12 bg-gradient-to-r from-<?php echo $transaction['type'] === 'income' ? 'green' : 'red'; ?>-400 to-<?php echo $transaction['type'] === 'income' ? 'green' : 'red'; ?>-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
-                                    <i class="fas <?php echo $transaction['category_icon']; ?> text-white"></i>
+                                    <i class="fas <?php echo !empty($transaction['category_icon']) ? $transaction['category_icon'] : ($transaction['type'] === 'income' ? 'fa-arrow-trend-up' : 'fa-tag'); ?> text-white"></i>
                                 </div>
                             </div>
                             <div class="flex-1 min-w-0">
@@ -361,7 +362,7 @@ $financialGoals = $stmt->get_result();
             </div>
 
             <!-- Goals Section -->
-            <div class="mt-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mt-12 max-w-7xl mx-auto">
                 <div class="glass-effect rounded-2xl p-6 shadow-xl">
                     <div class="flex items-center justify-between mb-6">
                         <h3 class="text-xl font-bold text-white flex items-center">

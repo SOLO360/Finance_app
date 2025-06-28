@@ -50,17 +50,17 @@ if ($_SERVER['REQUEST_METHOD'] != 'POST') {
 
 try {
     // Get income data
-    $sql_income = "SELECT SUM(amount) as total_income FROM income WHERE income_date BETWEEN ? AND ? AND user_id = ?";
+    $sql_income = "SELECT SUM(amount) as total_income FROM income WHERE income_date BETWEEN ? AND ?";
     $stmt = $conn->prepare($sql_income);
-    $stmt->bind_param("ssi", $start_date, $end_date, $userId);
+    $stmt->bind_param("ss", $start_date, $end_date);
     $stmt->execute();
     $result_income = $stmt->get_result();
     $total_income = $result_income->fetch_assoc()['total_income'] ?? 0;
     
     // Get expense data
-    $sql_expenses = "SELECT SUM(amount) as total_expenses FROM expenses WHERE expense_date BETWEEN ? AND ? AND user_id = ?";
+    $sql_expenses = "SELECT SUM(amount) as total_expenses FROM expenses WHERE expense_date BETWEEN ? AND ?";
     $stmt = $conn->prepare($sql_expenses);
-    $stmt->bind_param("ssi", $start_date, $end_date, $userId);
+    $stmt->bind_param("ss", $start_date, $end_date);
     $stmt->execute();
     $result_expenses = $stmt->get_result();
     $total_expenses = $result_expenses->fetch_assoc()['total_expenses'] ?? 0;
@@ -69,13 +69,12 @@ try {
     $net_profit = $total_income - $total_expenses;
     
     // Get detailed income data
-    $sql_income_detailed = "SELECT i.*, ic.name as category_name 
+    $sql_income_detailed = "SELECT i.*, i.category as category_name 
                            FROM income i 
-                           LEFT JOIN income_categories ic ON i.category_id = ic.id 
-                           WHERE i.income_date BETWEEN ? AND ? AND i.user_id = ? 
+                           WHERE i.income_date BETWEEN ? AND ? 
                            ORDER BY i.income_date DESC";
     $stmt = $conn->prepare($sql_income_detailed);
-    $stmt->bind_param("ssi", $start_date, $end_date, $userId);
+    $stmt->bind_param("ss", $start_date, $end_date);
     $stmt->execute();
     $result_income_detailed = $stmt->get_result();
     while ($row = $result_income_detailed->fetch_assoc()) {
@@ -87,10 +86,10 @@ try {
                             FROM expenses e 
                             LEFT JOIN expense_categories ec ON e.category_id = ec.id 
                             LEFT JOIN payment_methods pm ON e.payment_method_id = pm.id 
-                            WHERE e.expense_date BETWEEN ? AND ? AND e.user_id = ? 
+                            WHERE e.expense_date BETWEEN ? AND ? 
                             ORDER BY e.expense_date DESC";
     $stmt = $conn->prepare($sql_expense_detailed);
-    $stmt->bind_param("ssi", $start_date, $end_date, $userId);
+    $stmt->bind_param("ss", $start_date, $end_date);
     $stmt->execute();
     $result_expense_detailed = $stmt->get_result();
     while ($row = $result_expense_detailed->fetch_assoc()) {
@@ -101,11 +100,11 @@ try {
     $sql_category = "SELECT ec.name as category_name, SUM(e.amount) as category_total, COUNT(e.id) as transaction_count
                     FROM expenses e 
                     LEFT JOIN expense_categories ec ON e.category_id = ec.id 
-                    WHERE e.expense_date BETWEEN ? AND ? AND e.user_id = ? 
+                    WHERE e.expense_date BETWEEN ? AND ? 
                     GROUP BY ec.id, ec.name 
                     ORDER BY category_total DESC";
     $stmt = $conn->prepare($sql_category);
-    $stmt->bind_param("ssi", $start_date, $end_date, $userId);
+    $stmt->bind_param("ss", $start_date, $end_date);
     $stmt->execute();
     $result_category = $stmt->get_result();
     while ($row = $result_category->fetch_assoc()) {
@@ -116,11 +115,11 @@ try {
     $sql_payment_method = "SELECT pm.name as payment_method_name, SUM(e.amount) as method_total, COUNT(e.id) as transaction_count
                           FROM expenses e 
                           LEFT JOIN payment_methods pm ON e.payment_method_id = pm.id 
-                          WHERE e.expense_date BETWEEN ? AND ? AND e.user_id = ? 
+                          WHERE e.expense_date BETWEEN ? AND ? 
                           GROUP BY pm.id, pm.name 
                           ORDER BY method_total DESC";
     $stmt = $conn->prepare($sql_payment_method);
-    $stmt->bind_param("ssi", $start_date, $end_date, $userId);
+    $stmt->bind_param("ss", $start_date, $end_date);
     $stmt->execute();
     $result_payment_method = $stmt->get_result();
     while ($row = $result_payment_method->fetch_assoc()) {
@@ -131,11 +130,11 @@ try {
     $sql_top_expenses = "SELECT e.*, ec.name as category_name 
                         FROM expenses e 
                         LEFT JOIN expense_categories ec ON e.category_id = ec.id 
-                        WHERE e.expense_date BETWEEN ? AND ? AND e.user_id = ? 
+                        WHERE e.expense_date BETWEEN ? AND ? 
                         ORDER BY e.amount DESC 
                         LIMIT 10";
     $stmt = $conn->prepare($sql_top_expenses);
-    $stmt->bind_param("ssi", $start_date, $end_date, $userId);
+    $stmt->bind_param("ss", $start_date, $end_date);
     $stmt->execute();
     $result_top_expenses = $stmt->get_result();
     while ($row = $result_top_expenses->fetch_assoc()) {
@@ -146,11 +145,11 @@ try {
     $sql_income_sources = "SELECT ic.name as source_name, SUM(i.amount) as source_total, COUNT(i.id) as transaction_count
                           FROM income i 
                           LEFT JOIN income_categories ic ON i.category_id = ic.id 
-                          WHERE i.income_date BETWEEN ? AND ? AND i.user_id = ? 
+                          WHERE i.income_date BETWEEN ? AND ? 
                           GROUP BY ic.id, ic.name 
                           ORDER BY source_total DESC";
     $stmt = $conn->prepare($sql_income_sources);
-    $stmt->bind_param("ssi", $start_date, $end_date, $userId);
+    $stmt->bind_param("ss", $start_date, $end_date);
     $stmt->execute();
     $result_income_sources = $stmt->get_result();
     while ($row = $result_income_sources->fetch_assoc()) {
@@ -168,7 +167,7 @@ try {
                             SUM(amount) as income,
                             0 as expense
                         FROM income 
-                        WHERE user_id = ? AND income_date >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
+                        WHERE income_date >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
                         GROUP BY DATE_FORMAT(income_date, '%Y-%m')
                         
                         UNION ALL
@@ -178,13 +177,12 @@ try {
                             0 as income,
                             SUM(amount) as expense
                         FROM expenses 
-                        WHERE user_id = ? AND expense_date >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
+                        WHERE expense_date >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
                         GROUP BY DATE_FORMAT(expense_date, '%Y-%m')
                     ) combined
                     GROUP BY month
                     ORDER BY month DESC";
     $stmt = $conn->prepare($sql_monthly);
-    $stmt->bind_param("ii", $userId, $userId);
     $stmt->execute();
     $result_monthly = $stmt->get_result();
     while ($row = $result_monthly->fetch_assoc()) {
@@ -210,6 +208,20 @@ if (isset($_POST['export']) && $_POST['export'] == 'csv') {
     fputcsv($output, [$total_income, $total_expenses, $net_profit]);
     fputcsv($output, []);
     
+    // If detailed report, add both income and expense details
+    if ($report_type == 'detailed') {
+        // Add income details
+        fputcsv($output, ['Income Details']);
+        fputcsv($output, ['Date', 'Description', 'Category', 'Amount']);
+        foreach ($income_data as $income) {
+            fputcsv($output, [
+                $income['income_date'],
+                $income['description'],
+                $income['category_name'] ?? 'N/A',
+                $income['amount']
+            ]);
+        }
+        fputcsv($output, []);
     // Add expense details
     fputcsv($output, ['Expense Details']);
     fputcsv($output, ['Date', 'Description', 'Category', 'Payment Method', 'Amount']);
@@ -221,6 +233,20 @@ if (isset($_POST['export']) && $_POST['export'] == 'csv') {
             $expense['payment_method_name'] ?? 'N/A',
             $expense['amount']
         ]);
+        }
+    } else {
+        // Default: only expense details (legacy behavior)
+        fputcsv($output, ['Expense Details']);
+        fputcsv($output, ['Date', 'Description', 'Category', 'Payment Method', 'Amount']);
+        foreach ($expense_data as $expense) {
+            fputcsv($output, [
+                $expense['expense_date'],
+                $expense['description'],
+                $expense['category_name'] ?? 'N/A',
+                $expense['payment_method_name'] ?? 'N/A',
+                $expense['amount']
+            ]);
+        }
     }
     
     fclose($output);

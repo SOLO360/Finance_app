@@ -82,6 +82,7 @@
     font-size: 18px;
     letter-spacing: 0;
     line-height: normal;
+    transition: color 0.3s ease; /* Smooth transition effect for text color */
   }
   
   .desktop .div-wrapper {
@@ -198,4 +199,40 @@
     letter-spacing: 0;
     line-height: normal;
     transition: color 0.3s ease; /* Smooth transition effect for text color */
+}
+
+/* Sidebar Transitions and Animations */
+.sidebar-transition {
+    transition: transform 0.3s ease-in-out, margin-left 0.3s ease-in-out;
+}
+
+.sidebar-overlay {
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.chevron-rotate {
+    transition: transform 0.3s ease-in-out;
+}
+
+.chevron-rotate.rotated {
+    transform: rotate(180deg);
+}
+
+/* Smooth content transitions */
+.content-transition {
+    transition: margin-left 0.3s ease-in-out;
+}
+
+/* Mobile sidebar improvements */
+@media (max-width: 1023px) {
+    .sidebar-mobile {
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+}
+
+/* Desktop sidebar improvements */
+@media (min-width: 1024px) {
+    .sidebar-desktop {
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    }
 }
